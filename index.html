@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mobileshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Hind+Siliguri:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef2f8; --surface:#ffffffcc; --ink:#0e1b2c; --muted:#5b6b82; --line:#d6deea;
+  --accent:#2f5bff; --accent2:#ff6a3d; --orb1:#8fb0ff; --orb2:#ffc2a8; --orb3:#a9f0dc;
+  --shadow:0 10px 30px rgba(14,27,44,.10);
+}
+body.dark{
+  --bg:#0a1220; --surface:#121d31cc; --ink:#e8eefb; --muted:#93a3bf; --line:#22314d;
+  --accent:#6f8dff; --accent2:#ff8a63; --orb1:#1d3a8a; --orb2:#6b2a1a; --orb3:#0e5a4b;
+  --shadow:0 10px 30px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Space Grotesk','Hind Siliguri',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;
+  transition:background .4s,color .4s;line-height:1.6;position:relative;overflow-x:hidden}
+/* Background orbs */
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden}
+.bg i{position:absolute;border-radius:50%;filter:blur(90px);opacity:.75;transition:background .4s}
+.bg i:nth-child(1){width:46vw;height:46vw;background:var(--orb1);top:-12vw;left:-10vw}
+.bg i:nth-child(2){width:38vw;height:38vw;background:var(--orb2);top:30vh;right:-12vw}
+.bg i:nth-child(3){width:34vw;height:34vw;background:var(--orb3);bottom:-14vw;left:25vw}
+.bg::after{content:"";position:absolute;inset:0;background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:26px 26px;opacity:.5}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:0;color:inherit;background:none}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+
+/* Navbar */
+header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:var(--surface);border-bottom:1px solid var(--line)}
+nav{display:flex;align-items:center;gap:14px;height:68px}
+.logo{font-weight:700;font-size:1.45rem;letter-spacing:-.03em;display:flex;align-items:center;gap:8px}
+.logo b{display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:var(--accent);color:#fff;font-size:1rem}
+.links{display:flex;gap:4px;margin-left:auto}
+.links button{padding:8px 14px;border-radius:999px;font-weight:500;color:var(--muted);transition:.2s}
+.links button:hover{color:var(--ink)}
+.links button.on{background:var(--ink);color:var(--bg)}
+.tools{display:flex;align-items:center;gap:8px}
+.chip{height:38px;min-width:38px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px}
+.chip:hover{border-color:var(--accent)}
+.chip img,.avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:.8rem}
+.burger{display:none}
+@media(max-width:860px){
+  .links{position:absolute;top:68px;left:0;right:0;flex-direction:column;background:var(--bg);padding:12px 20px;border-bottom:1px solid var(--line);display:none}
+  .links.open{display:flex}
+  .burger{display:flex;margin-left:auto}
+  .tools{margin-left:0}
+  #pname{display:none}
+}
+
+/* Views */
+.view{display:none;padding:44px 0 90px}
+.view.on{display:block}
+.view.on .wrap>*{animation:rise .35s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+h1{font-size:clamp(2.4rem,6vw,4.4rem);line-height:1.04;letter-spacing:-.04em}
+h2{font-size:clamp(1.6rem,3vw,2.2rem);letter-spacing:-.03em;margin-bottom:6px}
+.sub{color:var(--muted);max-width:52ch}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:14px;background:var(--accent);color:#fff;font-weight:700;box-shadow:0 8px 20px -6px var(--accent)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;min-height:420px}
+.hero p{margin:18px 0 28px}
+.hero .row{display:flex;gap:12px;flex-wrap:wrap}
+.phone{justify-self:center;width:230px;height:440px;border-radius:38px;padding:10px;background:linear-gradient(145deg,#1a2740,#05080f);box-shadow:var(--shadow),0 40px 80px -30px var(--accent);transform:rotate(6deg)}
+.phone div{height:100%;border-radius:30px;background:linear-gradient(160deg,var(--accent),var(--accent2));position:relative;overflow:hidden;color:#fff;padding:26px 18px}
+.phone div::before{content:"";position:absolute;top:10px;left:50%;width:70px;height:18px;border-radius:12px;background:#05080f;transform:translateX(-50%)}
+.phone strong{display:block;font-size:2.6rem;margin-top:40px;letter-spacing:-.04em}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.phone{width:180px;height:350px}}
+
+/* Products */
+.head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:56px 0 22px;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;backdrop-filter:blur(8px);transition:transform .2s}
+.card:hover{transform:translateY(-4px)}
+.card .img{aspect-ratio:1/1;background:linear-gradient(135deg,#dbe4ff,#ffe3d6);display:grid;place-items:center}
+body.dark .card .img{background:linear-gradient(135deg,#1b2a4a,#3a2218)}
+.card .img img{width:100%;height:100%;object-fit:cover}
+.card .img svg{width:40%;opacity:.55}
+.card .body{padding:16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.card h3{font-size:1.05rem}
+.card p{color:var(--muted);font-size:.9rem;flex:1}
+.price{font-weight:700;font-size:1.2rem;color:var(--accent)}
+.card .buy{margin-top:8px;padding:10px;border-radius:12px;background:var(--ink);color:var(--bg);font-weight:600;text-align:center}
+.empty{padding:40px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:18px}
+
+/* Panels & forms */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:28px;box-shadow:var(--shadow);backdrop-filter:blur(10px)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:26px}
+@media(max-width:760px){.two{grid-template-columns:1fr}}
+label{display:block;font-weight:500;margin:14px 0 6px;font-size:.92rem}
+input,textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+textarea{min-height:100px;resize:vertical}
+.preview{margin-top:10px;max-height:150px;border-radius:12px;display:none}
+.alist{display:flex;flex-direction:column;gap:10px;margin-top:14px;max-height:420px;overflow:auto}
+.arow{display:flex;align-items:center;gap:12px;padding:10px;border:1px solid var(--line);border-radius:14px}
+.arow img,.arow .ph{width:46px;height:46px;border-radius:10px;object-fit:cover;background:var(--line)}
+.arow span{flex:1;min-width:0}.arow small{color:var(--muted);display:block}
+.del{color:#e5484d;font-weight:600;padding:6px 10px}
+.info{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+.info a{display:block;padding:14px 16px;border:1px solid var(--line);border-radius:14px;font-weight:500}
+.info small{display:block;color:var(--muted);font-weight:400}
+
+/* Modal */
+.modal{position:fixed;inset:0;background:rgba(5,10,20,.55);display:none;place-items:center;z-index:90;padding:20px}
+.modal.on{display:grid}
+.modal .panel{width:100%;max-width:400px;background:var(--bg)}
+.pavatar{width:96px;height:96px;border-radius:50%;object-fit:cover;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:2rem;margin:0 auto 10px}
+
+/* WhatsApp */
+.wa{position:fixed;right:20px;bottom:20px;z-index:80}
+.wa-btn{width:60px;height:60px;border-radius:50%;background:#25d366;display:grid;place-items:center;box-shadow:0 10px 24px rgba(37,211,102,.5)}
+.wa-btn svg{width:32px;fill:#fff}
+.wa-box{position:absolute;right:0;bottom:74px;width:290px;background:var(--bg);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;display:none}
+.wa-box.on{display:block}
+.wa-top{background:#128c7e;color:#fff;padding:12px 16px;font-weight:700}
+.wa-top small{display:block;font-weight:400;opacity:.85}
+.wa-chat{padding:16px;min-height:90px;background:var(--surface)}
+.msg{background:var(--bg);border:1px solid var(--line);padding:10px 14px;border-radius:4px 14px 14px 14px;display:inline-block;animation:rise .3s both}
+.dots span{display:inline-block;width:6px;height:6px;margin:0 2px;border-radius:50%;background:var(--muted);animation:bl 1s infinite}
+.dots span:nth-child(2){animation-delay:.15s}.dots span:nth-child(3){animation-delay:.3s}
+@keyframes bl{50%{opacity:.2}}
+.wa-go{display:block;margin:12px;padding:11px;border-radius:12px;background:#25d366;color:#04230f;font-weight:700;text-align:center}
+
+footer{border-top:1px solid var(--line);padding:24px 0;text-align:center;color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<div class="bg"><i></i><i></i><i></i></div>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="#" data-go="home"><b>m</b>mobileshop</a>
+      <div class="links" id="links">
+        <button data-go="home" data-i18n="home">Home</button>
+        <button data-go="about" data-i18n="about">About Us</button>
+        <button data-go="contact" data-i18n="contact">Contact Us</button>
+        <button data-go="products" data-i18n="products">Products</button>
+        <button data-go="admin" data-i18n="admin">Admin Panel</button>
+      </div>
+      <div class="tools">
+        <button class="chip" id="themeBtn" aria-label="Toggle theme">🌙</button>
+        <button class="chip" id="langBtn" aria-label="Switch language">বাংলা</button>
+        <button class="chip" id="profileBtn"><span id="pavatarNav" class="avatar">U</span><span id="pname">User</span></button>
+        <button class="chip burger" id="burger" aria-label="Menu">☰</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+<!-- HOME -->
+<section class="view" id="home"><div class="wrap">
+  <div class="hero">
+    <div>
+      <h1 data-i18n="heroTitle">The right phone, at the right price.</h1>
+      <p class="sub" data-i18n="heroText">Brand-new smartphones and accessories, checked and ready to go. Ask us anything on WhatsApp.</p>
+      <div class="row">
+        <button class="btn" data-go="products" data-i18n="shop">Shop phones</button>
+        <button class="btn ghost" data-go="contact" data-i18n="contact">Contact Us</button>
+      </div>
+    </div>
+    <div class="phone"><div><span>mobileshop</span><strong>5G</strong><span data-i18n="tag">Fast. Sharp. Yours.</span></div></div>
+  </div>
+  <div class="head"><div><h2 data-i18n="latest">Latest arrivals</h2></div><button class="btn ghost" data-go="products" data-i18n="viewAll">View all</button></div>
+  <div class="grid" id="homeGrid"></div>
+</div></section>
+
+<!-- PRODUCTS -->
+<section class="view" id="products"><div class="wrap">
+  <h2 data-i18n="products">Products</h2>
+  <p class="sub" data-i18n="prodText">Everything currently in stock.</p>
+  <div class="grid" id="allGrid" style="margin-top:24px"></div>
+</div></section>
+
+<!-- ABOUT -->
+<section class="view" id="about"><div class="wrap">
+  <h2 data-i18n="about">About Us</h2>
+  <div class="panel" style="margin-top:20px">
+    <p data-i18n="aboutText">mobileshop sells genuine smartphones and accessories at fair prices. Every device is tested before it reaches you, and we reply fast when you have questions.</p>
+  </div>
+  <div class="two">
+    <div class="panel"><h2 data-i18n="a1t">Genuine devices</h2><p class="sub" data-i18n="a1">Original phones with warranty.</p></div>
+    <div class="panel"><h2 data-i18n="a2t">Quick answers</h2><p class="sub" data-i18n="a2">Chat with us on WhatsApp any time.</p></div>
+  </div>
+</div></section>
+
+<!-- CONTACT -->
+<section class="view" id="contact"><div class="wrap">
+  <h2 data-i18n="contact">Contact Us</h2>
+  <p class="sub" data-i18n="contactText">Pick the way that suits you.</p>
+  <div class="panel info" style="margin-top:20px;max-width:560px">
+    <a href="mailto:mdshadhin3021@gmail.com"><small data-i18n="email">Email</small>mdshadhin3021@gmail.com</a>
+    <a href="https://wa.me/8801827815478" target="_blank" rel="noopener"><small>WhatsApp</small>+880 1827-815478</a>
+  </div>
+</div></section>
+
+<!-- ADMIN -->
+<section class="view" id="admin"><div class="wrap">
+  <h2 data-i18n="admin">Admin Panel</h2>
+  <p class="sub" data-i18n="adminText">Add a product and it shows up on Home and Products right away.</p>
+  <div class="two">
+    <form class="panel" id="pform">
+      <h2 style="font-size:1.3rem" data-i18n="upload">Upload product</h2>
+      <label data-i18n="pn">Product name</label><input id="pName" required>
+      <label data-i18n="pp">Price (৳)</label><input id="pPrice" type="number" min="0" step="any" required>
+      <label data-i18n="pi">Image</label><input id="pImg" type="file" accept="image/*" required>
+      <img class="preview" id="pPrev" alt="">
+      <label data-i18n="pd">Description</label><textarea id="pDesc" required></textarea>
+      <button class="btn" style="margin-top:18px" data-i18n="publish">Publish product</button>
+    </form>
+    <div class="panel">
+      <h2 style="font-size:1.3rem" data-i18n="manage">Manage products</h2>
+      <div class="alist" id="alist"></div>
+    </div>
+  </div>
+</div></section>
+</main>
+
+<footer>© <span id="yr"></span> mobileshop · mdshadhin3021@gmail.com</footer>
+
+<!-- PROFILE MODAL -->
+<div class="modal" id="pmodal"><form class="panel" id="prof">
+  <div class="pavatar" id="pavBig">U</div>
+  <label data-i18n="photo">Profile photo</label><input type="file" id="phFile" accept="image/*">
+  <label data-i18n="uname">Your name</label><input id="uName" required maxlength="30">
+  <div style="display:flex;gap:10px;margin-top:20px"><button class="btn" data-i18n="save">Save</button><button type="button" class="btn ghost" id="pclose" data-i18n="close">Close</button></div>
+</form></div>
+
+<!-- WHATSAPP -->
+<div class="wa">
+  <div class="wa-box" id="waBox">
+    <div class="wa-top">mobileshop<small data-i18n="online">Online now</small></div>
+    <div class="wa-chat" id="waChat"></div>
+    <a class="wa-go" id="waGo" target="_blank" rel="noopener" data-i18n="continueWa">Continue on WhatsApp</a>
+  </div>
+  <button class="wa-btn" id="waBtn" aria-label="WhatsApp chat">
+    <svg viewBox="0 0 32 32"><path d="M16 3C9 3 3.3 8.6 3.3 15.5c0 2.3.6 4.4 1.7 6.3L3 29l7.4-1.9c1.8 1 3.800 1.500 5.600 1.500 7 0 12.700-5.600 12.700-12.500S23 3 16 3zm6.400 17.600c-.3.800-1.600 1.500-2.200 1.600-.6.100-1.300.100-2.100-.1-.5-.2-1.100-.4-1.900-.8-3.300-1.400-5.400-4.700-5.600-4.900-.2-.2-1.300-1.700-1.300-3.200s.8-2.300 1.100-2.600c.3-.3.600-.4.800-.4h.6c.2 0 .5-.1.700.5l1 2.400c.1.200.1.400 0 .6l-.4.600-.5.600c-.2.200-.4.400-.2.800.2.400 1 1.600 2.100 2.600 1.400 1.200 2.600 1.600 3 1.800.4.200.6.100.8-.1l1.100-1.300c.3-.3.500-.2.800-.1l2.300 1.100c.4.200.6.300.7.400.1.200.1.800-.2 1.600z"/></svg>
+  </button>
+</div>
+
+<script>
+/* ---------- Translations ---------- */
+const T={
+en:{home:"Home",about:"About Us",contact:"Contact Us",products:"Products",admin:"Admin Panel",
+heroTitle:"The right phone, at the right price.",heroText:"Brand-new smartphones and accessories, checked and ready to go. Ask us anything on WhatsApp.",
+shop:"Shop phones",tag:"Fast. Sharp. Yours.",latest:"Latest arrivals",viewAll:"View all",prodText:"Everything currently in stock.",
+aboutText:"mobileshop sells genuine smartphones and accessories at fair prices. Every device is tested before it reaches you, and we reply fast when you have questions.",
+a1t:"Genuine devices",a1:"Original phones with warranty.",a2t:"Quick answers",a2:"Chat with us on WhatsApp any time.",
+contactText:"Pick the way that suits you.",email:"Email",adminText:"Add a product and it shows up on Home and Products right away.",
+upload:"Upload product",pn:"Product name",pp:"Price (৳)",pi:"Image",pd:"Description",publish:"Publish product",manage:"Manage products",
+photo:"Profile photo",uname:"Your name",save:"Save",close:"Close",online:"Online now",continueWa:"Continue on WhatsApp",
+greet:"How may I help you, Sir/Madam?",buy:"Ask on WhatsApp",empty:"No products yet. Add one in the Admin Panel.",del:"Delete",user:"User",confirm:"Delete this product?",lang:"বাংলা"},
+bn:{home:"হোম",about:"আমাদের সম্পর্কে",contact:"যোগাযোগ",products:"পণ্যসমূহ",admin:"অ্যাডমিন প্যানেল",
+heroTitle:"সঠিক ফোন, সঠিক দামে।",heroText:"একদম নতুন স্মার্টফোন ও অ্যাকসেসরিজ, পরীক্ষা করা ও প্রস্তুত। যেকোনো প্রশ্ন হোয়াটসঅ্যাপে করুন।",
+shop:"ফোন দেখুন",tag:"দ্রুত। শার্প। আপনার।",latest:"নতুন পণ্য",viewAll:"সব দেখুন",prodText:"বর্তমানে স্টকে থাকা সব পণ্য।",
+aboutText:"mobileshop ন্যায্য দামে আসল স্মার্টফোন ও অ্যাকসেসরিজ বিক্রি করে। প্রতিটি ডিভাইস আপনার হাতে পৌঁছানোর আগে পরীক্ষা করা হয়।",
+a1t:"আসল ডিভাইস",a1:"ওয়ারেন্টিসহ অরিজিনাল ফোন।",a2t:"দ্রুত উত্তর",a2:"যেকোনো সময় হোয়াটসঅ্যাপে কথা বলুন।",
+contactText:"আপনার সুবিধামতো মাধ্যম বেছে নিন।",email:"ইমেইল",adminText:"পণ্য যোগ করলেই তা হোম ও পণ্য পেজে দেখা যাবে।",
+upload:"পণ্য আপলোড",pn:"পণ্যের নাম",pp:"দাম (৳)",pi:"ছবি",pd:"বিবরণ",publish:"পণ্য প্রকাশ করুন",manage:"পণ্য ব্যবস্থাপনা",
+photo:"প্রোফাইল ছবি",uname:"আপনার নাম",save:"সংরক্ষণ",close:"বন্ধ করুন",online:"এখন অনলাইনে",continueWa:"হোয়াটসঅ্যাপে চালিয়ে যান",
+greet:"আমি আপনাকে কীভাবে সাহায্য করতে পারি, স্যার/ম্যাডাম?",buy:"হোয়াটসঅ্যাপে জিজ্ঞাসা",empty:"এখনও কোনো পণ্য নেই। অ্যাডমিন প্যানেল থেকে যোগ করুন।",del:"মুছুন",user:"ইউজার",confirm:"এই পণ্যটি মুছবেন?",lang:"English"}
+};
+const WA="8801827815478";
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
+const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{alert("Storage full: use a smaller image or delete a product.")}};
+
+let lang=load("ms_lang","en"), dark=load("ms_dark",false);
+let products=load("ms_products",null);
+if(!products){products=[
+ {id:1,name:"Nova X5",price:24990,desc:"6.5\" AMOLED, 128GB, 50MP camera, 5000mAh battery.",img:""},
+ {id:2,name:"Pixel Lite 8",price:18500,desc:"Clean software, 8GB RAM, all-day battery.",img:""},
+ {id:3,name:"Orbit Pro Max",price:42900,desc:"Flagship chip, 120Hz display, fast charging.",img:""}];save("ms_products",products)}
+let profile=load("ms_profile",{name:"",photo:""});
+
+const t=k=>T[lang][k]||k;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=n=>"৳ "+Number(n).toLocaleString(lang==="bn"?"bn-BD":"en-US");
+
+/* ---------- Rendering ---------- */
+const PH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="7" y="2" width="10" height="20" rx="2.500"/><path d="M11 18h2"/></svg>';
+function card(p){
+  const msg=encodeURIComponent(`${t("greet")} - ${p.name} (${fmt(p.price)})`);
+  return `<article class="card"><div class="img">${p.img?`<img src="${p.img}" alt="${esc(p.name)}" loading="lazy">`:PH}</div>
+  <div class="body"><h3>${esc(p.name)}</h3><p>${esc(p.desc)}</p><div class="price">${fmt(p.price)}</div>
+  <a class="buy" target="_blank" rel="noopener" href="https://wa.me/${WA}?text=${msg}">${t("buy")}</a></div></article>`;
+}
+function render(){
+  const list=[...products].reverse();
+  $("#homeGrid").innerHTML=list.slice(0,4).map(card).join("")||`<div class="empty">${t("empty")}</div>`;
+  $("#allGrid").innerHTML=list.map(card).join("")||`<div class="empty">${t("empty")}</div>`;
+  $("#alist").innerHTML=list.map(p=>`<div class="arow">${p.img?`<img src="${p.img}" alt="">`:'<div class="ph"></div>'}
+   <span><b>${esc(p.name)}</b><small>${fmt(p.price)}</small></span><button class="del" data-del="${p.i
